@@ -41,8 +41,11 @@ body {
     background-color: black;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+  }
+  #status {
+    padding: 30px;
   }
   main {
     grid-area: main;
@@ -57,7 +60,7 @@ body {
   #modal {
     visibility: hidden;
     width: 50vw;
-    max-width: 400px;
+    max-width: 100vmin;
     padding: 30px;
     position: fixed;
     top: 45%;
@@ -71,6 +74,25 @@ body {
     opacity: 0;
   }
   #modal.open {
+    visibility: visible;
+    opacity: 1;
+  }
+  #descriptions {
+    visibility: hidden;
+    position: fixed;
+    max-width: 100vmin;
+    padding: 30px;
+    top: 45%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    background-color: black;
+    border-style: solid;
+    border-radius: 2vmin;
+    opacity: 0;
+  }
+  #descriptions.open {
     visibility: visible;
     opacity: 1;
   }
@@ -103,7 +125,6 @@ body {
   }
   @media only screen and (min-width:768px) {
     body {
-      /* tablet - two column display */
       grid-template-columns: 1fr 3fr;
       grid-template-rows: 150px 200px 150px auto;
       grid-template-areas:

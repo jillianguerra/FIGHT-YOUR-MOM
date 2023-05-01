@@ -23,12 +23,15 @@ const momsMoveEl = document.querySelector('#moms-move')
 const choicesEl = document.querySelector('#choices')
 const battleHistoryEl = document.querySelector('#battle-history')
 const modal = document.querySelector('#modal')
-const beginBtn = document.querySelector("#begin")
+const des = document.querySelector('#descriptions')
+const beginBtn = document.querySelector('#begin')
 const playAgainBtn = document.querySelector('#play-again')
 const yellBtn = document.querySelector('#yell')
 const pleadBtn = document.querySelector('#plead')
 const cryBtn = document.querySelector('#cry')
 const tantrumBtn = document.querySelector('#tantrum')
+const helpBtn = document.querySelector('#help')
+const closeBtn = document.querySelector('#close')
 /*----- event listeners -----*/
 
 playAgainBtn.addEventListener('click', init)
@@ -37,14 +40,18 @@ yellBtn.addEventListener('click', yellAtk)
 pleadBtn.addEventListener('click', pleadAtk)
 cryBtn.addEventListener('click', crySpell)
 tantrumBtn.addEventListener('click', tantrumSpecial)
+helpBtn.addEventListener('click', toggleDes)
+closeBtn.addEventListener('click', toggleDes)
 
 /*----- functions -----*/
 
 function toggleModal() {
-  modal.classList.toggle("open")
+  modal.classList.toggle('open')
 }
 toggleModal()
-
+function toggleDes() {
+  des.classList.toggle('open')
+}
 
 function init() {
   mom.health = 1000
@@ -71,12 +78,14 @@ function getWinner() {
     momsMoveEl.innerText = `YOU LOSE!`
     playAgainBtn.style.visibility = 'visible'
     choicesEl.style.visibility = 'hidden'
+    render()
   } else if (mom.health <= 0) {
     battleHistory.you ++
     yourMoveEl.innerText = `MOM IS TOO TIRED AND LEAVES YOUR ROOM. SHE WON'T GROUND YOU UNTIL MORNING.`
     momsMoveEl.innerText = `YOU WIN!!!!`
     playAgainBtn.style.visibility = 'visible'
     choicesEl.style.visibility = 'hidden'
+    render()
   } else {
     return
   }
@@ -99,18 +108,17 @@ function chooseMomsMove() {
 function sigh() {
   if (player.health - 5 <= 0) {
     player.health = 0 
+    getWinner()
   } else { 
     player.health -= 5
      momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU TAKE 5 DAMAGE!`
+    render()
   }
-  render()
-  getWinner()
 }
 function lecture() {
   if (player.health - 20 <= 0) {
     player.health = 0
     getWinner()
-    render()
   } else { 
     player.health -= 20
       momsMoveEl.innerText = `MOM LECTURES YOU! YOU TAKE 20 DAMAGE!`
@@ -130,7 +138,6 @@ function confiscateGameboy() {
   if (player.health - 100 <= 0) {
     player.health = 0
     getWinner()
-    render()
   } else {
     player.health -= 100
       momsMoveEl.innerText = `MOM CONFISCATES YOUR GAMEBOY! YOU TAKE 100 DAMAGE!!`
@@ -141,7 +148,6 @@ function yellAtk() {
   if (mom.health - player.strength <= 0) {
     mom.health = 0
     getWinner()
-    render()
   } else {
     mom.health -= player.strength
     yourMoveEl.innerText = `YELL DID ${player.strength} DAMAGE!`
@@ -170,7 +176,6 @@ let tantrumDamage = randomization(100)
   if (mom.health - tantrumDamage <= 0) {
     mom.health = 0
     getWinner()
-    render()
   } else {
     mom.health -= tantrumDamage
      yourMoveEl.innerText = `TANTRUM DID ${tantrumDamage} DAMAGE!`
