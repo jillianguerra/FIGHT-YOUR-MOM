@@ -3,10 +3,13 @@ const player = {
   name: 'YOU',
   health: 300,
   strength: 10,
+  defense: 10,
 }
 const mom = {
   name: 'MOM',
   health: 1000,
+  strength: 100,
+  defense: 100,
   choices: ['sigh', 'sigh', 'lecture', 'lecture', 'lecture', 'guiltTrip', 'guiltTrip', 'confiscateGameboy'],
 }
 const battleHistory = {
@@ -35,7 +38,7 @@ const closeBtn = document.querySelector('#close')
 /*----- event listeners -----*/
 
 playAgainBtn.addEventListener('click', init)
-beginBtn.addEventListener('click', init)
+beginBtn.addEventListener('click', toggleModal)
 yellBtn.addEventListener('click', yellAtk)
 pleadBtn.addEventListener('click', pleadAtk)
 cryBtn.addEventListener('click', crySpell)
@@ -44,25 +47,26 @@ helpBtn.addEventListener('click', toggleDes)
 closeBtn.addEventListener('click', toggleDes)
 
 /*----- functions -----*/
-
-function toggleModal() {
-  modal.classList.toggle('open')
-}
+init()
 toggleModal()
-function toggleDes() {
-  des.classList.toggle('open')
-}
-
 function init() {
   mom.health = 1000
+  mom.defense = 100
+  mom.strength = 100
   player.health = 300
   player.strength = 10
+  player.defense = 10
   momsMoveEl.innerText = ``
   yourMoveEl.innerText = ``
   playAgainBtn.style.visibility = 'hidden'
   choicesEl.style.visibility = 'visible'
   render()
-  toggleModal()
+}
+function toggleModal() {
+  modal.classList.toggle('open')
+}
+function toggleDes() {
+  des.classList.toggle('open')
 }
 function render() {
   statusEl.innerHTML = `<div>YOUR HEALTH: ${player.health}</div>
@@ -107,56 +111,81 @@ function chooseMomsMove() {
 }
 function sigh() {
   if (player.health - 10 <= 0) {
-    player.health = 0 
-    getWinner()
-  } else { 
-    player.health -= 10
-     momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU TAKE 10 DAMAGE!`
-    render()
+      player.health = 0 
+      getWinner()
+  } else if (player.defense - 5 <= 0) {
+      player.defense = 0
+      player.health -= 10
+      momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU TAKE 10 DAMAGE! YOU FEEL WEAK!`
+  }else { 
+      player.health -= 10
+      player.defense -= 5
+      momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU TAKE 10 DAMAGE! YOU FEEL WEAKER!`
+      render()
   }
 }
 function lecture() {
-  if (player.health - 30 <= 0) {
+  const damage = mom.strength - 60 - player.defense
+  if (player.health - damage <= 0) {
     player.health = 0
     getWinner()
   } else { 
-    player.health -= 30
+    player.health -= damage
       momsMoveEl.innerText = `MOM LECTURES YOU! YOU TAKE 30 DAMAGE!`
     render()
   }
 }
 function guiltTrip() {
   momsMoveEl.innerText = `MOM WEAKENS YOU WITH GUILT TRIP!`
-  if (player.strength - 5 <= 5) {
+  if (player.strength - 5 <= 5 && player.defense - 5 <= 0 ) {
     player.strength = 5
+    player.defense = 0
+  } else if (player.strength - 5 <= 5) {
+    player.strength = 5
+    player.defense -= 5
+  } else if (player.defense -5 <= 0) {
+    player.strength -= 5
+    player.defense = 0
   } else {
     player.strength -= 5
+    player.defense -= 5
   }
   render()
 }
 function confiscateGameboy() {
-  if (player.health - 100 <= 0) {
+  let damage = mom.strength - player.defense
+  if (player.health - damage <= 0) {
     player.health = 0
     getWinner()
   } else {
     player.health -= 100
-      momsMoveEl.innerText = `MOM CONFISCATES YOUR GAMEBOY! YOU TAKE 100 DAMAGE!!`
+      momsMoveEl.innerText = `MOM CONFISCATES YOUR GAMEBOY! YOU TAKE ${damage} DAMAGE!!`
   }
   render()
 }
 function yellAtk() {
-  if (mom.health - player.strength <= 0) {
+  damage = player.strength
+  if (mom.health - damage <= 0) {
     mom.health = 0
     getWinner()
   } else {
-    mom.health -= player.strength
-    yourMoveEl.innerText = `YELL DID ${player.strength} DAMAGE!`
+    mom.health -= damage
+    yourMoveEl.innerText = `YELL DID ${damage} DAMAGE!`
     chooseMomsMove()
   }
 }
 function pleadAtk() {
-  player.strength += 10
-  yourMoveEl.innerText = `PLEAD MADE YELL STRONGER!`
+  if (player.strength === 50) {
+    yourMoveEl.innerText = `PLEAD DID NOTHING!?`
+  } else if (player.strength + 10 >= 50) {
+    player.strength = 50
+    player.defense += 5
+    yourMoveEl.innerText = `PLEAD MADE YOU STRONGER!`
+  } else {
+    player.strength += 10
+    player.defense += 5
+    yourMoveEl.innerText = `PLEAD MADE YOU STRONGER!`
+  }
 chooseMomsMove()
 }
 function crySpell() {
@@ -172,16 +201,13 @@ function crySpell() {
   chooseMomsMove()
 }
 function tantrumSpecial() {
-let tantrumDamage = randomization(100)
-  if (mom.health - tantrumDamage <= 0) {
+let damage = randomization(mom.defense)
+  if (mom.health - damage <= 0) {
     mom.health = 0
     getWinner()
   } else {
-    mom.health -= tantrumDamage
-     yourMoveEl.innerText = `TANTRUM DID ${tantrumDamage} DAMAGE!`
+    mom.health -= damage
+     yourMoveEl.innerText = `TANTRUM DID ${damage} DAMAGE!`
     chooseMomsMove()
   }
 }
-function startGame() {
-  toggleModal();
-};
