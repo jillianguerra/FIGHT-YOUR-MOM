@@ -106,22 +106,22 @@ function chooseMomsMove() {
   }
 }
 function sigh() {
-  if (player.health - 5 <= 0) {
+  if (player.health - 10 <= 0) {
     player.health = 0 
     getWinner()
   } else { 
-    player.health -= 5
-     momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU TAKE 5 DAMAGE!`
+    player.health -= 10
+     momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU TAKE 10 DAMAGE!`
     render()
   }
 }
 function lecture() {
-  if (player.health - 20 <= 0) {
+  if (player.health - 30 <= 0) {
     player.health = 0
     getWinner()
   } else { 
-    player.health -= 20
-      momsMoveEl.innerText = `MOM LECTURES YOU! YOU TAKE 20 DAMAGE!`
+    player.health -= 30
+      momsMoveEl.innerText = `MOM LECTURES YOU! YOU TAKE 30 DAMAGE!`
     render()
   }
 }
