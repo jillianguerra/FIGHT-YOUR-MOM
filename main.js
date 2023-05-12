@@ -13,15 +13,15 @@ const mom = {
   health: null,
   strength: null,
   defense: null,
-  choices: ['sigh', 'sigh', 'lecture', 'lecture', 'lecture', 'guiltTrip', 'guiltTrip'],
-  choicesLow: ['sigh', 'lecture', 'lecture', 'lecture', 'guiltTrip', 'confiscateGameboy'],
+  choices: ['sigh', 'sigh', 'lecture', 'lecture', 'lecture', 'guiltTrip', 'guiltTrip', 'extraChores',],
+  choicesLow: ['sigh', 'lecture', 'lecture', 'lecture', 'guiltTrip', 'extraChores', 'extraChores', 'confiscateGameboy'],
 }
 const battleHistory = {
   you: 0,
   mom: 0,
 }
 /*----- state variables -----*/
-
+let winner
 
 /*----- cached elements  -----*/
 const statusEl = document.querySelector('#status')
@@ -37,8 +37,10 @@ const momsMoveEl = document.querySelector('#moms-move')
 const choicesEl = document.querySelector('#choices')
 const battleHistoryEl = document.querySelector('#battle-history')
 
-const modal = document.querySelector('#modal')
+const intro = document.querySelector('#intro')
 const des = document.querySelector('#descriptions')
+const winMsg = document.querySelector('#winner-msg')
+const winMsgEl = document.querySelector('#winner-msg > div')
 
 const beginBtn = document.querySelector('#begin')
 const playAgainBtn = document.querySelector('#play-again')
@@ -50,8 +52,8 @@ const helpBtn = document.querySelector('#help')
 const closeBtn = document.querySelector('#close')
 /*----- event listeners -----*/
 
-playAgainBtn.addEventListener('click', init)
-beginBtn.addEventListener('click', toggleModal)
+playAgainBtn.addEventListener('click', playAgain)
+beginBtn.addEventListener('click', toggleIntro)
 yellBtn.addEventListener('click', yellAtk)
 pleadBtn.addEventListener('click', pleadAtk)
 cryBtn.addEventListener('click', crySpell)
@@ -61,30 +63,34 @@ closeBtn.addEventListener('click', toggleDes)
 
 /*----- functions -----*/
 init()
-toggleModal()
+toggleIntro()
 function init() {
+  winner = null
   mom.health = 1000
   mom.defense = 100
   mom.strength = 100
   player.health = 300
   player.strength = 10
   player.defense = 10
-  player.heals = 15
+  player.heals = 20
   player.counter = 0
   player.tantrums = 5
-  cryBtn.style.backgroundColor = "cornflowerblue"
-  tantrumBtn.style.backgroundColor = "orange"
   momsMoveEl.innerText = ``
   yourMoveEl.innerText = ``
-  playAgainBtn.style.visibility = 'hidden'
-  choicesEl.style.visibility = 'visible'
   render()
 }
-function toggleModal() {
-  modal.classList.toggle('open')
+function toggleIntro() {
+  intro.classList.toggle('open')
 }
 function toggleDes() {
   des.classList.toggle('open')
+}
+function toggleWinMsg() {
+  winMsg.classList.toggle('open')
+}
+function playAgain() {
+  toggleWinMsg()
+  init()
 }
 function render() {
   renderHealth()
@@ -118,6 +124,8 @@ function renderPlayerInfo() {
   renderDef()
   renderHeals()
   renderTantrums()
+  renderWinnerMsg()
+  renderBtns()
 }
 function renderPoison() {
   if (player.counter !== 0) {
@@ -141,7 +149,7 @@ function renderDef() {
   }
 }
 function renderHeals() {
-  if (player.heals === 15) {
+  if (player.heals === 20) {
     healsEl.innerHTML = `YOUR HEALS: <span style="color: limegreen">${player.heals}</span>`
   } else {
     healsEl.innerHTML = `YOUR HEALS: ${player.heals}`
@@ -154,20 +162,38 @@ function renderTantrums() {
     tantrumsEl.innerHTML = `YOUR TANTRUMS: ${player.tantrums}`
   }
 }
+function renderBtns() {
+  playAgainBtn.style.visibility = winner ? 'visible' : 'hidden'
+  choicesEl.style.visibility = winner ? 'hidden' : 'visible'
+  helpBtn.style.visibility = winner ? 'hidden' : 'visible'
+  tantrumBtn.style.backgroundColor = player.tantrums === 0 ? "gray" : "orange"
+  cryBtn.style.backgroundColor = player.heals === 0 ? "gray" : "cornflowerblue"
+}
+function renderWinnerMsg() {
+  if (winner === null) {
+    return
+  } else if (winner === 'mom') {
+    winMsgEl.innerHTML = `
+    <h2>MOM SAYS YOU ARE GROUNDED UNTIL FURTHER NOTICE!</h2>
+    <h2>YOU LOSE!</h2>
+    `
+  } else if (winner === 'you') {
+    winMsgEl.innerHTML = `
+    <h2>MOM IS TOO TIRED AND LEAVES YOUR ROOM.</h2>
+    <p><small>SHE WILL PROBABLY GROUND YOU IN THE MORNING THOUGH...</small></p>
+    <h2>YOU WIN!!!!</h2>
+    `
+  }
+  toggleWinMsg()
+}
 function getWinner() {
   if (player.health <= 0) {
+    winner = 'mom'
     battleHistory.mom ++
-    yourMoveEl.innerText = `MOM SAYS YOU ARE GROUNDED UNTIL FURTHER NOTICE!`
-    momsMoveEl.innerText = `YOU LOSE!`
-    playAgainBtn.style.visibility = 'visible'
-    choicesEl.style.visibility = 'hidden'
     render()
   } else if (mom.health <= 0) {
+    winner = 'you'
     battleHistory.you ++
-    yourMoveEl.innerText = `MOM IS TOO TIRED AND LEAVES YOUR ROOM. SHE WON'T GROUND YOU UNTIL MORNING.`
-    momsMoveEl.innerText = `YOU WIN!!!!`
-    playAgainBtn.style.visibility = 'visible'
-    choicesEl.style.visibility = 'hidden'
     render()
   } else {
     return
@@ -178,7 +204,7 @@ function randomization(limit) {
 }
 function chooseMomsMove() {
   let momsMove
-  if (mom.health <= 300) {
+  if (mom.health <= 500) {
     momsMove = mom.choicesLow[randomization(mom.choicesLow.length)]
   } else {
     momsMove = mom.choices[randomization(mom.choices.length)]
@@ -191,14 +217,20 @@ function chooseMomsMove() {
       guiltTrip()
     } else if (momsMove === 'confiscateGameboy') {
       confiscateGameboy()
+    } else if (momsMove === 'extraChores') {
+      extraChores()
     }
 }
 function sigh() {
   if (player.counter !== 0) {
     chooseMomsMove()
-  } else {
+  } else if (player.health - 10 === 0){
+    player.health = 0
+    getWinner()
+  }else {
     let count = 1 + randomization(5)
     player.counter = count
+    player.health -= 10
     momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU FEEL WEAK!`
     render()
   }
@@ -221,13 +253,13 @@ function lecture() {
     getWinner()
   } else { 
     player.health -= damage
-      momsMoveEl.innerText = `MOM LECTURES YOU! YOU TAKE 30 DAMAGE!`
+      momsMoveEl.innerText = `MOM LECTURES YOU! YOU TAKE ${damage} DAMAGE!`
     render()
   }
 }
 function guiltTrip() {
-  let strAmount = guiltTripStr()
-  let defAmount = guiltTripDef()
+  let strAmount = player.strength === 0 ? 0 : 10
+  let defAmount = player.defense === 0 ? 0 : 5
    if (strAmount === 0 && defAmount === 0) {
     chooseMomsMove()
    } else {
@@ -237,25 +269,28 @@ function guiltTrip() {
     render()
    }
 }
-function guiltTripStr() {
-  let amount
-  if (player.strength === 0) {
-    amount = 0
+function extraChores() {
+  let damage = getChoresDamage()
+  if (player.health - damage <= 0) {
+    player.health = 0
+    getWinner()
   } else {
-    amount = 10
+    player.health -= damage
+    momsMoveEl.innerText = `MOM TELLS YOU TO DO EXTRA CHORES! YOU TAKE ${damage} DAMAGE!`
+    render()
   }
-  return amount
 }
-function guiltTripDef() {
-  let amount
-  if (player.defense === 0) {
-    amount = 0
-  } else {
-    amount = 5
-  }
-  return amount
+function getChoresDamage() {
+  let damage
+  let amount = 10 + randomization(mom.strength * 0.5)
+  let playerDef = player.defense * 0.5
+   if (playerDef >= amount) {
+    damage = 1 + randomization(10)
+   } else {
+    damage = amount - playerDef
+   }
+   return damage
 }
-
 function confiscateGameboy() {
   let damage = mom.strength - player.defense * 0.5
   if (player.health - damage <= 0) {
@@ -265,7 +300,6 @@ function confiscateGameboy() {
     player.health -= damage
       momsMoveEl.innerText = `MOM CONFISCATES YOUR GAMEBOY! YOU TAKE ${damage} DAMAGE!!`
   }
-  console.log(damage)
   render()
 }
 function yellAtk() {
@@ -317,37 +351,37 @@ function pleadDef() {
   return amount
 }
 function crySpell() {
+  let amount = player.defense + player.strength
   if (player.heals === 0) {
-    yourMoveEl.innerText = `YOU CAN'T CRY ANYMORE!!`
-    cryBtn.style.backgroundColor = "gray"
+    yourMoveEl.innerText = `YOU'VE RUN OUT OF TEARS TO CRY!`
   } else if (player.health === 300) {
     yourMoveEl.innerText = `CRY DID NOTHING...`
-  } else if (player.health + 50 > 300) {
+  } else if (player.health + amount > 300) {
     let heal = 300 - player.health
     player.health = 300
     player.heals --
     yourMoveEl.innerText = `CRY HEALED ${heal} HEALTH!`
   } else {
-    player.health += 50
+    player.health += amount
     player.heals --
-    yourMoveEl.innerText = `CRY HEALED 50 HEALTH`
+    yourMoveEl.innerText = `CRY HEALED ${amount} HEALTH`
   }
   poison()
   chooseMomsMove()
 }
 function tantrumSpecial() {
-let damage = randomization(mom.defense) + player.strength
-if (player.tantrums === 0) {
-  yourMoveEl.innerText = `YOU CANNOT THROW ANOTHER TANTRUM!`
-  tantrumBtn.style.backgroundColor = "gray"
-} else if (mom.health - damage <= 0) {
+  let playerStr = randomization(player.strength)
+  let damage = 1 + randomization(100) + playerStr
+  if (player.tantrums === 0) {
+    yourMoveEl.innerText = `YOU DON'T HAVE THE ENERGY TO THROW ANOTHER TANTRUM!`
+  } else if (mom.health - damage <= 0) {
     mom.health = 0
     getWinner()
   } else {
     mom.health -= damage
     player.tantrums --
-     yourMoveEl.innerText = `TANTRUM DID ${damage} DAMAGE!`
-     poison()
-     chooseMomsMove()
+    yourMoveEl.innerText = `TANTRUM DID ${damage} DAMAGE!`
+    poison()
+    chooseMomsMove()
   }
 }
