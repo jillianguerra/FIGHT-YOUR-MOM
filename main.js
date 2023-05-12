@@ -12,7 +12,6 @@ const mom = {
   name: 'MOM',
   health: null,
   strength: null,
-  defense: null,
   choices: ['sigh', 'sigh', 'lecture', 'lecture', 'lecture', 'guiltTrip', 'guiltTrip', 'extraChores',],
   choicesLow: ['sigh', 'lecture', 'lecture', 'lecture', 'guiltTrip', 'extraChores', 'extraChores', 'confiscateGameboy'],
 }
@@ -25,7 +24,6 @@ let winner
 
 /*----- cached elements  -----*/
 const statusEl = document.querySelector('#status')
-const playerInfoEl = document.querySelector('#player-info')
 const poisonEl = document.querySelector('#poison-status')
 const strengthEl = document.querySelector('#player-strength')
 const defenseEl = document.querySelector('#player-defense')
@@ -67,7 +65,6 @@ toggleIntro()
 function init() {
   winner = null
   mom.health = 1000
-  mom.defense = 100
   mom.strength = 100
   player.health = 300
   player.strength = 10
@@ -96,6 +93,8 @@ function render() {
   renderHealth()
   renderScore()
   renderPlayerInfo()
+  renderWinnerMsg()
+  renderBtns()
 }
 function renderHealth() {
   if (player.health === 300 && mom.health === 1000){
@@ -119,48 +118,21 @@ function renderScore() {
     `
 }
 function renderPlayerInfo() {
-  renderPoison()
-  renderStr()
-  renderDef()
-  renderHeals()
-  renderTantrums()
-  renderWinnerMsg()
-  renderBtns()
-}
-function renderPoison() {
-  if (player.counter !== 0) {
-    poisonEl.innerHTML = `<span style="color:crimson">POISONED FOR ${player.counter} TURNS!!</span`
-  } else {
-    poisonEl.innerHTML = ``
-  }
-}
-function renderStr() {
-  if (player.strength === 50) {
-    strengthEl.innerHTML = `YOUR STRENGTH: <span style="color: limegreen">${player.strength}</span>`
-  } else {
-    strengthEl.innerHTML = `YOUR STRENGTH: ${player.strength}`
-  }
-}
-function renderDef() {
-  if (player.defense === 30) {
-    defenseEl.innerHTML = `YOUR DEFENSE: <span style="color: limegreen">${player.defense}</span>`
-  } else {
-    defenseEl.innerHTML = `YOUR DEFENSE: ${player.defense}`
-  }
-}
-function renderHeals() {
-  if (player.heals === 20) {
-    healsEl.innerHTML = `YOUR HEALS: <span style="color: limegreen">${player.heals}</span>`
-  } else {
-    healsEl.innerHTML = `YOUR HEALS: ${player.heals}`
-  }
-}
-function renderTantrums() {
-  if (player.tantrums === 5) {
-    tantrumsEl.innerHTML = `YOUR TANTRUMS: <span style="color: limegreen">${player.tantrums}</span>`
-  } else {
-    tantrumsEl.innerHTML = `YOUR TANTRUMS: ${player.tantrums}`
-  }
+  poisonEl.innerHTML = player.counter !== 0 ?
+  `<span style="color:crimson">POISONED FOR ${player.counter} TURNS!!</span` :
+  ``
+  strengthEl.innerHTML = player.strength === 50 ?
+  `YOUR STRENGTH: <span style="color: limegreen">${player.strength}</span>` :
+  `YOUR STRENGTH: ${player.strength}`
+  defenseEl.innerHTML = player.defense === 30 ? 
+  `YOUR DEFENSE: <span style="color: limegreen">${player.defense}</span>` :
+  `YOUR DEFENSE: ${player.defense}`
+  healsEl.innerHTML = player.heals === 20 ? 
+  `YOUR HEALS: <span style="color: limegreen">${player.heals}</span>` :
+  `YOUR HEALS: ${player.heals}`
+  tantrumsEl.innerHTML = player.tantrums === 5 ? 
+  `YOUR TANTRUMS: <span style="color: limegreen">${player.tantrums}</span>` :
+  `YOUR TANTRUMS: ${player.tantrums}`
 }
 function renderBtns() {
   playAgainBtn.style.visibility = winner ? 'visible' : 'hidden'
@@ -177,14 +149,15 @@ function renderWinnerMsg() {
     <h2>MOM SAYS YOU ARE GROUNDED UNTIL FURTHER NOTICE!</h2>
     <h2>YOU LOSE!</h2>
     `
+    toggleWinMsg()
   } else if (winner === 'you') {
     winMsgEl.innerHTML = `
     <h2>MOM IS TOO TIRED AND LEAVES YOUR ROOM.</h2>
     <p><small>SHE WILL PROBABLY GROUND YOU IN THE MORNING THOUGH...</small></p>
     <h2>YOU WIN!!!!</h2>
     `
+    toggleWinMsg()
   }
-  toggleWinMsg()
 }
 function getWinner() {
   if (player.health <= 0) {
@@ -203,34 +176,31 @@ function randomization(limit) {
   return Math.floor(Math.random() * limit)
 }
 function chooseMomsMove() {
-  let momsMove
-  if (mom.health <= 500) {
-    momsMove = mom.choicesLow[randomization(mom.choicesLow.length)]
-  } else {
-    momsMove = mom.choices[randomization(mom.choices.length)]
-  }
-    if (momsMove === 'sigh') {
+  let momsMove = mom.health <= 500 ?
+  mom.choicesLow[randomization(mom.choicesLow.length)] :
+  mom.choices[randomization(mom.choices.length)]
+  if (momsMove === 'sigh') {
       sigh()
-    } else if (momsMove === 'lecture') {
+  } else if (momsMove === 'lecture') {
       lecture()
-    } else if (momsMove === 'guiltTrip') {
+   } else if (momsMove === 'guiltTrip') {
       guiltTrip()
-    } else if (momsMove === 'confiscateGameboy') {
+  } else if (momsMove === 'confiscateGameboy') {
       confiscateGameboy()
-    } else if (momsMove === 'extraChores') {
+  } else if (momsMove === 'extraChores') {
       extraChores()
-    }
+  }
 }
 function sigh() {
+  let count = 1 + randomization(5)
   if (player.counter !== 0) {
     chooseMomsMove()
-  } else if (player.health - 10 === 0){
+  } else if (player.health - count - 5 <= 0){
     player.health = 0
     getWinner()
   }else {
-    let count = 1 + randomization(5)
     player.counter = count
-    player.health -= 10
+    player.health -= count + 5
     momsMoveEl.innerText = `MOM SIGHS IN DISAPPROVAL! YOU FEEL WEAK!`
     render()
   }
@@ -319,11 +289,9 @@ function pleadAtk() {
   let defAmount = pleadDef()
   player.strength += strAmount
   player.defense += defAmount
-  if (strAmount === 0 && defAmount === 0) {
-    yourMoveEl.innerText = `PLEAD DID NOTHING!?`
-  } else {
-    yourMoveEl.innerText = `PLEAD MADE YOU STRONGER!`
-  }
+  yourMoveEl.innerText = strAmount === 0 && defAmount === 0 ?
+  `PLEAD DID NOTHING!?` :
+  `PLEAD MADE YOU STRONGER!`
   poison()
   chooseMomsMove()
 }
