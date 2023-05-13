@@ -3,7 +3,6 @@ body {
     font-size: 3vmin;
     color: white;
     background-color: dimgray;
-    text-align: center;
     height: 100vh;
     margin: 0;
     gap: 5px;
@@ -19,6 +18,7 @@ body {
   }
   header {
     grid-area: header;
+    text-align: center;
     font-family: 'Bungee Shade', sans-serif;
     font-size: 4vmin;
     color: crimson;
@@ -40,12 +40,8 @@ body {
     grid-area: aside;
     background-color: black;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     align-items: center;
-  }
-  #status {
-    padding: 30px;
   }
   main {
     grid-area: main;
@@ -60,9 +56,9 @@ body {
     align-items: center;
     background-color: black;
   }
-  
   .modal {
     visibility: hidden;
+    text-align: center;
     width: 50vw;
     max-width: 100vmin;
     padding: 30px;
@@ -125,5 +121,15 @@ body {
         "aside content"
         "aside main"
         "aside footer";
+    }
+    aside {
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    #status {
+      padding-top: 30px;
+    }
+    #player-info {
+      padding-top: 30px;
     }
   }
