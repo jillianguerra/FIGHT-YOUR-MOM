@@ -217,20 +217,6 @@ function sigh() {
     render()
   }
 }
-function applyPoison() {
-  if (player.counter !== 0) {
-    if (player.health - 5 <= 0) {
-      player.health = 0
-      getWinner()
-    } else {
-      player.health -= 5
-      player.counter--
-      chooseMomsMove()
-    }
-  } else {
-    chooseMomsMove()
-  }
-}
 function lecture() {
   const damage = mom.strength / 2 - player.defense
   if (player.health - damage <= 0) {
@@ -287,6 +273,20 @@ function confiscateGameboy() {
   }
   render()
 }
+function applyStatusEffect() {
+  if (player.counter !== 0) {
+    if (player.health - 5 <= 0) {
+      player.health = 0
+      getWinner()
+    } else {
+      player.health -= 5
+      player.counter--
+      chooseMomsMove()
+    }
+  } else {
+    chooseMomsMove()
+  }
+}
 function yellAtk() {
   let damage = player.strength + 5
   if (mom.health - damage <= 0) {
@@ -295,7 +295,7 @@ function yellAtk() {
   } else {
     mom.health -= damage
     yourMoveEl.innerText = `YELL DID ${damage} DAMAGE!`
-    applyPoison()
+    applyStatusEffect()
   }
 }
 function pleadAtk() {
@@ -306,7 +306,7 @@ function pleadAtk() {
   yourMoveEl.innerText = strAmount === 0 && defAmount === 0 ?
     `PLEAD DID NOTHING!?` :
     `PLEAD MADE YOU STRONGER!`
-  applyPoison()
+  applyStatusEffect()
 }
 function crySpell() {
   let amount = player.defense + player.strength
@@ -324,7 +324,7 @@ function crySpell() {
     player.heals--
     yourMoveEl.innerText = `CRY HEALED ${amount} HEALTH`
   }
-  applyPoison()
+  applyStatusEffect()
 }
 function tantrumSpecial() {
   let playerStr = randomization(player.strength)
@@ -338,6 +338,6 @@ function tantrumSpecial() {
     mom.health -= damage
     player.tantrums--
     yourMoveEl.innerText = `TANTRUM DID ${damage} DAMAGE!`
-    applyPoison()
+    applyStatusEffect()
   }
 }
