@@ -29,6 +29,7 @@ body {
   }
   content {
     grid-area: content;
+    text-align: center;
     background-color: crimson;
     color: black;
     display: flex;
@@ -45,6 +46,7 @@ body {
   }
   main {
     grid-area: main;
+    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
