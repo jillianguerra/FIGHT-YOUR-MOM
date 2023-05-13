@@ -2,8 +2,6 @@
 <h1>FIGHT YOUR MOM</h1>
 <p>This is a browser game that uses HTML, CSS and JavaScript.</p>
 <p><a href="https://jillianguerra.github.io/FIGHT-YOUR-MOM/">Link to play game!</p>
-<img src="https://i.imgur.com/NL3WpBd.png">
-<h3>(Wireframe Image)</h3>
 <img src="https://i.imgur.com/TRdpc8B.png">
 <h2>Game Basics</h2>
 <p>
@@ -48,7 +46,8 @@ There is a another modal that appears when the player wins or loses.</p>
 <li>Adding music or sound effects. I didn't want to steal music so again, I would have to buy some royalty free music or comission someone for background music. I actually prefer browser games that don't have music or sound effects because it tends to be annoying.</li>
 <li>There's one little annoying bug that I don't know how to fix. The health bar turns white when the accent color is changed to crimson. I have no idea why it does this, since I haven't touched the progress element in CSS. I only change the accent color in JS. It may just be my computer being strange or it could be that progress elements are a little buggy in general.</li>
 </ul>
-
+<img src="https://i.imgur.com/NL3WpBd.png">
+<h3>(Wireframe Image)</h3>
 <h2>Pseudo-Code</h2>
 <ul>
 <li>The basic premise will be a turn-based battle game. The player will have 4 moves and the opponent will have 4 moves.</li>
