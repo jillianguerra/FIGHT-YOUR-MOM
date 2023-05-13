@@ -1,5 +1,7 @@
 <body>
 <h1>FIGHT YOUR MOM</h1>
+<p>This is a browser game that uses HTML, CSS and JavaScript.</p>
+<p><a src="https://jillianguerra.github.io/FIGHT-YOUR-MOM/">Link to play game!</p>
 <img src="https://i.imgur.com/NL3WpBd.png">
 <h3>(Wireframe Image)</h3>
 <img src="https://i.imgur.com/TRdpc8B.png">
