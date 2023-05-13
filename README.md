@@ -1,4 +1,4 @@
-<img src="https://imgur.com/a/5IzRrsV">
+<img src="https://i.imgur.com/NL3WpBd.png">
 (Wireframe Image)
 <img src="https://i.imgur.com/TRdpc8B.png">
 The basic premise will be a turn-based battle game. The player will have 4 moves and the opponent will have 4 moves plus one special "ultimate" move.
