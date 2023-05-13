@@ -48,4 +48,14 @@ There is a another modal that appears when the player wins or loses.</p>
 <li>Adding music or sound effects. I didn't want to steal music so again, I would have to buy some royalty free music or comission someone for background music. I actually prefer browser games that don't have music or sound effects because it tends to be annoying.</li>
 <li>There's one little annoying bug that I don't know how to fix. The health bar turns white when the accent color is changed to crimson. I have no idea why it does this, since I haven't touched the progress element in CSS. I only change the accent color in JS. It may just be my computer being strange or it could be that progress elements are a little buggy in general.</li>
 </ul>
+
+<h2>Pseudo-Code</h2>
+<ul>
+<li>The basic premise will be a turn-based battle game. The player will have 4 moves and the opponent will have 4 moves.</li>
+<li>When the player or the opponent reach 0 health, the game ends.</li>
+<li>There will be a play again button.</li>
+<li>I hope to challenge myself by putting a modal into the game that tells you a story about why the player is fighting.</li>
+<li>The opponent AI might just cycle randomly through the 4 moves. I might try to make it more likely for the opponent to pick one move over another.</li>
+<li>The four player moves will be different from the opponent's four moves.</li>
+</ul>
 </body>
